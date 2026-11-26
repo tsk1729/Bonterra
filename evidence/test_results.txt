@@ -1,0 +1,8 @@
+..............                                                           [100%]
+=============================== warnings summary ===============================
+tests/test_funding_workflows.py::test_request_lifecycle_and_persistence
+  /Users/sandeep/Desktop/Bont/.venv/lib/python3.14/site-packages/pytest_asyncio/plugin.py:1216: DeprecationWarning: 'asyncio.get_event_loop_policy' is deprecated and slated for removal in Python 3.16
+    return asyncio.get_event_loop_policy()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+14 passed, 1 warning in 17.04s

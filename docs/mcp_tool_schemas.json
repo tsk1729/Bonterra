@@ -1,0 +1,1235 @@
+{
+  "approve_request": {
+    "description": "Program manager: approve Pending request and atomically reserve full funding. Already Approved is a no-op; other states fail.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "pattern": "^[A-Za-z0-9_-]{1,100}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "request_id": {
+                  "type": "string"
+                },
+                "beneficiary_id": {
+                  "type": "string"
+                },
+                "fund_id": {
+                  "type": "string"
+                },
+                "purpose": {
+                  "type": "string"
+                },
+                "amount_cents": {
+                  "type": "integer"
+                },
+                "currency": {
+                  "const": "USD",
+                  "default": "USD",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "Pending",
+                    "Approved",
+                    "Rejected",
+                    "Paid"
+                  ],
+                  "type": "string"
+                },
+                "created_by_staff_id": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "paid_by_staff_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                },
+                "paid_at": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                }
+              },
+              "required": [
+                "request_id",
+                "beneficiary_id",
+                "fund_id",
+                "purpose",
+                "amount_cents",
+                "status",
+                "created_by_staff_id",
+                "created_at"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": [
+                    "FORBIDDEN",
+                    "NOT_FOUND",
+                    "INVALID_STATE",
+                    "INSUFFICIENT_FUNDS",
+                    "RETRYABLE_BUSY",
+                    "INTERNAL_ERROR"
+                  ],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "retryable": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "type": "object"
+    }
+  },
+  "create_request": {
+    "description": "Case worker: submit immutable Pending request, reserving no money. Amount is positive integer USD cents. Reuse the same idempotency key to return the original request on a retry.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "beneficiary_id": {
+          "pattern": "^[A-Za-z0-9_-]{1,100}$",
+          "type": "string"
+        },
+        "fund_id": {
+          "pattern": "^[A-Za-z0-9_-]{1,100}$",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 500,
+          "minLength": 1,
+          "type": "string"
+        },
+        "amount_cents": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000,
+          "type": "integer"
+        },
+        "idempotency_key": {
+          "pattern": "^[A-Za-z0-9_-]{1,100}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "beneficiary_id",
+        "fund_id",
+        "purpose",
+        "amount_cents",
+        "idempotency_key"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "request_id": {
+                  "type": "string"
+                },
+                "beneficiary_id": {
+                  "type": "string"
+                },
+                "fund_id": {
+                  "type": "string"
+                },
+                "purpose": {
+                  "type": "string"
+                },
+                "amount_cents": {
+                  "type": "integer"
+                },
+                "currency": {
+                  "const": "USD",
+                  "default": "USD",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "Pending",
+                    "Approved",
+                    "Rejected",
+                    "Paid"
+                  ],
+                  "type": "string"
+                },
+                "created_by_staff_id": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "paid_by_staff_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                },
+                "paid_at": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                }
+              },
+              "required": [
+                "request_id",
+                "beneficiary_id",
+                "fund_id",
+                "purpose",
+                "amount_cents",
+                "status",
+                "created_by_staff_id",
+                "created_at"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": [
+                    "FORBIDDEN",
+                    "NOT_FOUND",
+                    "INVALID_STATE",
+                    "INSUFFICIENT_FUNDS",
+                    "RETRYABLE_BUSY",
+                    "INTERNAL_ERROR"
+                  ],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "retryable": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "type": "object"
+    }
+  },
+  "funding_summary": {
+    "description": "Summarize one or all local funds in USD cents: available = allocation - committed - paid.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "fund_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9_-]{1,100}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "funds": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "fund_id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "allocation_cents": {
+                        "type": "integer"
+                      },
+                      "currency": {
+                        "const": "USD",
+                        "default": "USD",
+                        "type": "string"
+                      },
+                      "committed_cents": {
+                        "type": "integer"
+                      },
+                      "paid_cents": {
+                        "type": "integer"
+                      },
+                      "available_cents": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "fund_id",
+                      "name",
+                      "allocation_cents",
+                      "committed_cents",
+                      "paid_cents",
+                      "available_cents"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "funds"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": [
+                    "FORBIDDEN",
+                    "NOT_FOUND",
+                    "INVALID_STATE",
+                    "INSUFFICIENT_FUNDS",
+                    "RETRYABLE_BUSY",
+                    "INTERNAL_ERROR"
+                  ],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "retryable": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "type": "object"
+    }
+  },
+  "get_request": {
+    "description": "Retrieve a request and its payment fields in the authenticated organization. Foreign and unknown IDs both return NOT_FOUND.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "pattern": "^[A-Za-z0-9_-]{1,100}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "request_id": {
+                  "type": "string"
+                },
+                "beneficiary_id": {
+                  "type": "string"
+                },
+                "fund_id": {
+                  "type": "string"
+                },
+                "purpose": {
+                  "type": "string"
+                },
+                "amount_cents": {
+                  "type": "integer"
+                },
+                "currency": {
+                  "const": "USD",
+                  "default": "USD",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "Pending",
+                    "Approved",
+                    "Rejected",
+                    "Paid"
+                  ],
+                  "type": "string"
+                },
+                "created_by_staff_id": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "paid_by_staff_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                },
+                "paid_at": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                }
+              },
+              "required": [
+                "request_id",
+                "beneficiary_id",
+                "fund_id",
+                "purpose",
+                "amount_cents",
+                "status",
+                "created_by_staff_id",
+                "created_at"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": [
+                    "FORBIDDEN",
+                    "NOT_FOUND",
+                    "INVALID_STATE",
+                    "INSUFFICIENT_FUNDS",
+                    "RETRYABLE_BUSY",
+                    "INTERNAL_ERROR"
+                  ],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "retryable": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "type": "object"
+    }
+  },
+  "list_beneficiaries": {
+    "description": "List beneficiaries belonging to the authenticated organization. All staff roles may read.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "beneficiaries": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "beneficiary_id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "beneficiary_id",
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "beneficiaries"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": [
+                    "FORBIDDEN",
+                    "NOT_FOUND",
+                    "INVALID_STATE",
+                    "INSUFFICIENT_FUNDS",
+                    "RETRYABLE_BUSY",
+                    "INTERNAL_ERROR"
+                  ],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "retryable": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "type": "object"
+    }
+  },
+  "list_funds": {
+    "description": "List the authenticated organization's funds and USD allocations in integer cents.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "funds": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "fund_id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "allocation_cents": {
+                        "type": "integer"
+                      },
+                      "currency": {
+                        "const": "USD",
+                        "default": "USD",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "fund_id",
+                      "name",
+                      "allocation_cents"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "funds"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": [
+                    "FORBIDDEN",
+                    "NOT_FOUND",
+                    "INVALID_STATE",
+                    "INSUFFICIENT_FUNDS",
+                    "RETRYABLE_BUSY",
+                    "INTERNAL_ERROR"
+                  ],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "retryable": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "type": "object"
+    }
+  },
+  "list_requests": {
+    "description": "List this organization's requests, optionally filtered by Pending, Approved, Rejected or Paid.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "anyOf": [
+            {
+              "enum": [
+                "Pending",
+                "Approved",
+                "Rejected",
+                "Paid"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "requests": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "request_id": {
+                        "type": "string"
+                      },
+                      "beneficiary_id": {
+                        "type": "string"
+                      },
+                      "fund_id": {
+                        "type": "string"
+                      },
+                      "purpose": {
+                        "type": "string"
+                      },
+                      "amount_cents": {
+                        "type": "integer"
+                      },
+                      "currency": {
+                        "const": "USD",
+                        "default": "USD",
+                        "type": "string"
+                      },
+                      "status": {
+                        "enum": [
+                          "Pending",
+                          "Approved",
+                          "Rejected",
+                          "Paid"
+                        ],
+                        "type": "string"
+                      },
+                      "created_by_staff_id": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "string"
+                      },
+                      "paid_by_staff_id": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "default": null
+                      },
+                      "paid_at": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "default": null
+                      }
+                    },
+                    "required": [
+                      "request_id",
+                      "beneficiary_id",
+                      "fund_id",
+                      "purpose",
+                      "amount_cents",
+                      "status",
+                      "created_by_staff_id",
+                      "created_at"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "requests"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": [
+                    "FORBIDDEN",
+                    "NOT_FOUND",
+                    "INVALID_STATE",
+                    "INSUFFICIENT_FUNDS",
+                    "RETRYABLE_BUSY",
+                    "INTERNAL_ERROR"
+                  ],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "retryable": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "type": "object"
+    }
+  },
+  "record_payment": {
+    "description": "Finance: simulate full payment of Approved request once. Moves committed to paid; available is unchanged. Already Paid returns the unchanged request and payment metadata.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "pattern": "^[A-Za-z0-9_-]{1,100}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "request_id": {
+                  "type": "string"
+                },
+                "beneficiary_id": {
+                  "type": "string"
+                },
+                "fund_id": {
+                  "type": "string"
+                },
+                "purpose": {
+                  "type": "string"
+                },
+                "amount_cents": {
+                  "type": "integer"
+                },
+                "currency": {
+                  "const": "USD",
+                  "default": "USD",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "Pending",
+                    "Approved",
+                    "Rejected",
+                    "Paid"
+                  ],
+                  "type": "string"
+                },
+                "created_by_staff_id": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "paid_by_staff_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                },
+                "paid_at": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                }
+              },
+              "required": [
+                "request_id",
+                "beneficiary_id",
+                "fund_id",
+                "purpose",
+                "amount_cents",
+                "status",
+                "created_by_staff_id",
+                "created_at"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": [
+                    "FORBIDDEN",
+                    "NOT_FOUND",
+                    "INVALID_STATE",
+                    "INSUFFICIENT_FUNDS",
+                    "RETRYABLE_BUSY",
+                    "INTERNAL_ERROR"
+                  ],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "retryable": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "type": "object"
+    }
+  },
+  "reject_request": {
+    "description": "Program manager: reject Pending request without changing funding. Already Rejected is a no-op; other states fail.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "pattern": "^[A-Za-z0-9_-]{1,100}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "request_id": {
+                  "type": "string"
+                },
+                "beneficiary_id": {
+                  "type": "string"
+                },
+                "fund_id": {
+                  "type": "string"
+                },
+                "purpose": {
+                  "type": "string"
+                },
+                "amount_cents": {
+                  "type": "integer"
+                },
+                "currency": {
+                  "const": "USD",
+                  "default": "USD",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "Pending",
+                    "Approved",
+                    "Rejected",
+                    "Paid"
+                  ],
+                  "type": "string"
+                },
+                "created_by_staff_id": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "paid_by_staff_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                },
+                "paid_at": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null
+                }
+              },
+              "required": [
+                "request_id",
+                "beneficiary_id",
+                "fund_id",
+                "purpose",
+                "amount_cents",
+                "status",
+                "created_by_staff_id",
+                "created_at"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": [
+                    "FORBIDDEN",
+                    "NOT_FOUND",
+                    "INVALID_STATE",
+                    "INSUFFICIENT_FUNDS",
+                    "RETRYABLE_BUSY",
+                    "INTERNAL_ERROR"
+                  ],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "retryable": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "discovered_tools": [
+    "list_beneficiaries",
+    "list_funds",
+    "create_request",
+    "approve_request",
+    "reject_request",
+    "record_payment",
+    "get_request",
+    "list_requests",
+    "funding_summary"
+  ]
+}
+{
+  "beneficiaries": {
+    "beneficiaries": [
+      {
+        "beneficiary_id": "udaan_ananya",
+        "name": "Ananya Sharma"
+      },
+      {
+        "beneficiary_id": "udaan_rohan",
+        "name": "Rohan Kumar"
+      }
+    ]
+  },
+  "funds": {
+    "funds": [
+      {
+        "fund_id": "udaan_emergency",
+        "name": "Emergency Assistance",
+        "allocation_cents": 1000000,
+        "currency": "USD"
+      },
+      {
+        "fund_id": "udaan_transport",
+        "name": "Transportation",
+        "allocation_cents": 50000,
+        "currency": "USD"
+      }
+    ]
+  }
+}
+{
+  "created": {
+    "request_id": "1336ed72a8864339a7d15875553afc44",
+    "beneficiary_id": "udaan_ananya",
+    "fund_id": "udaan_emergency",
+    "purpose": "Emergency rent",
+    "amount_cents": 30000,
+    "currency": "USD",
+    "status": "Pending",
+    "created_by_staff_id": "udaan_case_worker",
+    "created_at": "2026-11-26T07:08:23.029960+00:00",
+    "paid_by_staff_id": null,
+    "paid_at": null
+  }
+}
+{
+  "approved": {
+    "request_id": "1336ed72a8864339a7d15875553afc44",
+    "beneficiary_id": "udaan_ananya",
+    "fund_id": "udaan_emergency",
+    "purpose": "Emergency rent",
+    "amount_cents": 30000,
+    "currency": "USD",
+    "status": "Approved",
+    "created_by_staff_id": "udaan_case_worker",
+    "created_at": "2026-11-26T07:08:23.029960+00:00",
+    "paid_by_staff_id": null,
+    "paid_at": null
+  },
+  "summary": {
+    "funds": [
+      {
+        "fund_id": "udaan_emergency",
+        "name": "Emergency Assistance",
+        "allocation_cents": 1000000,
+        "currency": "USD",
+        "committed_cents": 30000,
+        "paid_cents": 0,
+        "available_cents": 970000
+      }
+    ]
+  }
+}
+{
+  "paid": {
+    "request_id": "1336ed72a8864339a7d15875553afc44",
+    "beneficiary_id": "udaan_ananya",
+    "fund_id": "udaan_emergency",
+    "purpose": "Emergency rent",
+    "amount_cents": 30000,
+    "currency": "USD",
+    "status": "Paid",
+    "created_by_staff_id": "udaan_case_worker",
+    "created_at": "2026-11-26T07:08:23.029960+00:00",
+    "paid_by_staff_id": "udaan_finance",
+    "paid_at": "2026-11-26T07:08:25.210451+00:00"
+  },
+  "retrieved": {
+    "request_id": "1336ed72a8864339a7d15875553afc44",
+    "beneficiary_id": "udaan_ananya",
+    "fund_id": "udaan_emergency",
+    "purpose": "Emergency rent",
+    "amount_cents": 30000,
+    "currency": "USD",
+    "status": "Paid",
+    "created_by_staff_id": "udaan_case_worker",
+    "created_at": "2026-11-26T07:08:23.029960+00:00",
+    "paid_by_staff_id": "udaan_finance",
+    "paid_at": "2026-11-26T07:08:25.210451+00:00"
+  },
+  "final_summary": {
+    "funds": [
+      {
+        "fund_id": "udaan_emergency",
+        "name": "Emergency Assistance",
+        "allocation_cents": 1000000,
+        "currency": "USD",
+        "committed_cents": 0,
+        "paid_cents": 30000,
+        "available_cents": 970000
+      }
+    ]
+  }
+}
